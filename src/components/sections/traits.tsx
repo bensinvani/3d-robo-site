@@ -34,7 +34,9 @@ export function Traits() {
             yPercent: 60, opacity: 0, ease: "none",
             scrollTrigger: {
               trigger: card, containerAnimation: xTween,
-              start: "left 80%", end: "left 40%", scrub: true,
+              // the LAST card stops at ~54% viewport — the end position must be
+              // reachable by every card or the final reveal never completes
+              start: "left 95%", end: "left 65%", scrub: true,
             },
           });
         });
