@@ -249,9 +249,14 @@
     }
 
     /* ================= SCENE A : 0 – 4.5 ================= */
-    // hook burst: frames 0→49 in 1.5s, then slow 49→85 over 3s
-    scrub(heroFrames, 0, 49, 0.05, 1.5);
-    scrub(heroFrames, 49, 85, 1.5, 4.4);
+    // HOOK (virality fix): cold-open TIGHT on the glowing eyes (the money shot),
+    // then rewind wide and play the full dolly. First frame = IG cover frame.
+    tl.set(heroFrames[0], { opacity: 0 }, 0);
+    tl.set(heroFrames[69], { opacity: 1 }, 0);
+    scrub(heroFrames, 69, 85, 0.05, 0.7);
+    tl.set(heroFrames[85], { opacity: 0 }, 0.7);
+    tl.set(heroFrames[0], { opacity: 1 }, 0.7); // rewind: back to wide
+    scrub(heroFrames, 0, 85, 0.7, 4.4); // full dolly plays out
 
     // hook caption slams in (percussive), then hands off to title
     tl.fromTo("#hook", { opacity: 0, scale: 1.6 },
