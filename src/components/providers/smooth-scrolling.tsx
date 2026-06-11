@@ -22,7 +22,17 @@ export function SmoothScrolling({ children }: { children: React.ReactNode }) {
     <ReactLenis
       root
       ref={lenisRef}
-      options={{ autoRaf: false, lerp: 0.09, wheelMultiplier: 0.9, syncTouch: true, anchors: true }}
+      options={{
+        autoRaf: false,
+        // duration+easing mode (NOT lerp): fixed-curve glide per input that
+        // accumulates across wheel notches — lerp mode restarts its decay every
+        // notch and reads pulsy/snappy on stepped mouse wheels
+        duration: 1.35,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
+        wheelMultiplier: 0.9,
+        syncTouch: true,
+        anchors: true,
+      }}
     >
       {children}
     </ReactLenis>
