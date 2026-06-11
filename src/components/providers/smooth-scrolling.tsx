@@ -22,7 +22,7 @@ export function SmoothScrolling({ children }: { children: React.ReactNode }) {
     <ReactLenis
       root
       ref={lenisRef}
-      options={{ autoRaf: false, lerp: 0.06, duration: 1.4, syncTouch: true, anchors: true }}
+      options={{ autoRaf: false, lerp: 0.09, wheelMultiplier: 0.9, syncTouch: true, anchors: true }}
     >
       {children}
     </ReactLenis>

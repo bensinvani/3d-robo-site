@@ -23,7 +23,8 @@ export function Traits() {
           scrollTrigger: {
             trigger: root.current,
             pin: true,
-            scrub: 1,
+            anticipatePin: 1,
+            scrub: 1.2,
             end: () => `+=${track.scrollWidth - window.innerWidth}`,
             invalidateOnRefresh: true,
           },

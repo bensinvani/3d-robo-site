@@ -81,7 +81,8 @@ export function SequenceCanvas({
               start: "top top",
               end: scrollLength,
               pin: true,
-              scrub: 0.5,
+              anticipatePin: 1, // kills the 1-frame snap when the pin engages
+              scrub: 1.2,       // cinematic inertia; 0.5 reads steppy on wheel mice
             },
           });
           tl.to(state, {
