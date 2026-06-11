@@ -12,8 +12,8 @@ export function Turn() {
   return (
     <SequenceCanvas
       name="turn"
-      frames={200}
-      poster="/media/robo-1.jpg"
+      frames={201}
+      poster="/media/turn-poster.webp"
       scrollLength="+=200%"
       buildTimeline={(tl) => {
         gsap.utils.toArray<HTMLElement>(".beat").forEach((el, i) => {
