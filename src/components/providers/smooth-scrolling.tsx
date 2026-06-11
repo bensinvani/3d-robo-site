@@ -8,6 +8,8 @@ export function SmoothScrolling({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<LenisRef>(null);
 
   useEffect(() => {
+    // a scroll-choreographed page must start at its first beat
+    window.history.scrollRestoration = "manual";
     const update = (time: number) => lenisRef.current?.lenis?.raf(time * 1000);
     gsap.ticker.add(update);
     gsap.ticker.lagSmoothing(0);
