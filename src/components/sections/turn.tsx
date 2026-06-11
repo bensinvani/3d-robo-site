@@ -27,7 +27,7 @@ export function Turn() {
       name="turn"
       frames={201}
       poster="/media/turn-poster.webp"
-      scrollLength="+=200%"
+      heightVh={300}
       onProgress={onProgress}
     >
       <div className="absolute inset-0 flex items-center justify-start ps-[8vw]">

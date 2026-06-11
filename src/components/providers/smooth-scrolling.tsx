@@ -1,39 +1,38 @@
 "use client";
-import { ReactLenis, type LenisRef } from "lenis/react";
+import { ReactLenis, useLenis } from "lenis/react";
 import "lenis/dist/lenis.css";
-import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { useEffect } from "react";
+import { ScrollTrigger } from "@/lib/gsap";
+
+// ONE smoothing layer: Lenis lerp on its own RAF (autoRaf default). Canvas
+// sequences read the lerped scroll directly; ScrollTrigger (traits pin,
+// entrances) just gets notified.
+function ScrollTriggerSync() {
+  useLenis(ScrollTrigger.update);
+  useEffect(() => {
+    window.history.scrollRestoration = "manual"; // choreographed pages start at beat 1
+    document.fonts.ready.then(() => ScrollTrigger.refresh());
+  }, []);
+  return null;
+}
 
 export function SmoothScrolling({ children }: { children: React.ReactNode }) {
-  const lenisRef = useRef<LenisRef>(null);
-
-  useEffect(() => {
-    // a scroll-choreographed page must start at its first beat
-    window.history.scrollRestoration = "manual";
-    const update = (time: number) => lenisRef.current?.lenis?.raf(time * 1000);
-    gsap.ticker.add(update);
-    gsap.ticker.lagSmoothing(0);
-    lenisRef.current?.lenis?.on("scroll", ScrollTrigger.update);
-    document.fonts.ready.then(() => ScrollTrigger.refresh());
-    return () => gsap.ticker.remove(update);
-  }, []);
+  // Safari/iOS stutters with aggressive syncTouch; higher lerp smooths it.
+  const isSafari =
+    typeof navigator !== "undefined" &&
+    /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
   return (
     <ReactLenis
       root
-      ref={lenisRef}
       options={{
-        autoRaf: false,
-        // duration+easing mode (NOT lerp): fixed-curve glide per input that
-        // accumulates across wheel notches — lerp mode restarts its decay every
-        // notch and reads pulsy/snappy on stepped mouse wheels
-        duration: 1.35,
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
-        wheelMultiplier: 0.9,
-        syncTouch: true,
+        lerp: isSafari ? 0.1 : 0.08,
+        smoothWheel: true,
+        syncTouch: !isSafari,
         anchors: true,
       }}
     >
+      <ScrollTriggerSync />
       {children}
     </ReactLenis>
   );
