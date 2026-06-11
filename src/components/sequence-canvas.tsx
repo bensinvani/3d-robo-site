@@ -11,6 +11,9 @@ interface Props {
   /** Append overlay copy animations to the section's ONE pinned timeline.
    *  Author them as .from() tweens so the static (no-JS / poster) tier still reads. */
   buildTimeline?: (tl: gsap.core.Timeline) => void;
+  /** Scroll progress 0..1 for threshold-toggled overlays (CSS-transition pattern —
+   *  smoother than scrub tweens for text that pops in/out). */
+  onProgress?: (p: number) => void;
   className?: string;
   children?: React.ReactNode;
 }
@@ -24,7 +27,7 @@ const src = (name: string, i: number) =>
 const AHEAD = 24, BEHIND = 12, KEEP = 48;
 
 export function SequenceCanvas({
-  name, frames, poster, scrollLength, buildTimeline, className, children,
+  name, frames, poster, scrollLength, buildTimeline, onProgress, className, children,
 }: Props) {
   const wrap = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -120,6 +123,7 @@ export function SequenceCanvas({
               pin: true,
               anticipatePin: 1, // kills the 1-frame snap when the pin engages
               scrub: 1.2,       // cinematic inertia; 0.5 reads steppy on wheel mice
+              onUpdate: (self) => onProgress?.(self.progress),
               // a sequence you've scrolled past shouldn't keep ~200 MB decoded
               onLeave: () => { bitmaps.forEach((b) => b.close()); bitmaps.clear(); },
               onLeaveBack: () => { bitmaps.forEach((b) => b.close()); bitmaps.clear(); },
@@ -146,10 +150,18 @@ export function SequenceCanvas({
   );
 
   return (
-    <div ref={wrap} className={`relative h-screen overflow-hidden ${className ?? ""}`}>
+    <div
+      ref={wrap}
+      className={`relative h-screen overflow-hidden ${className ?? ""}`}
+      style={{ willChange: "transform", transform: "translateZ(0)" }} // GPU-promote the pinned layer
+    >
       {/* eslint-disable-next-line @next/next/no-img-element -- intentional plain img: LCP poster under the canvas */}
       <img src={poster} alt="" className="absolute inset-0 h-full w-full object-cover" />
-      <canvas ref={canvas} className="absolute inset-0 h-full w-full opacity-0" />
+      <canvas
+        ref={canvas}
+        className="absolute inset-0 h-full w-full opacity-0"
+        style={{ willChange: "contents" }}
+      />
       {children}
     </div>
   );

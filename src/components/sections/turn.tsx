@@ -1,34 +1,48 @@
 "use client";
-import { gsap } from "@/lib/gsap";
+import { useRef, useState } from "react";
 import { SequenceCanvas } from "@/components/sequence-canvas";
 
+// Threshold-toggled beats: visibility flips at scroll zones, but the MOTION runs on a
+// CSS transition's own clock — smooth regardless of how notchy the scroll input is.
 const BEATS = [
-  { at: 0.25, text: "robo hears you." },
-  { at: 0.55, text: "robo gets you." },
-  { at: 0.85, text: "robo's got you." },
+  { show: 0.12, hide: 0.38, text: "robo hears you." },
+  { show: 0.42, hide: 0.68, text: "robo gets you." },
+  { show: 0.72, hide: 1.01, text: "robo's got you." },
 ];
 
 export function Turn() {
+  const [active, setActive] = useState(-1);
+  const activeRef = useRef(-1);
+
+  const onProgress = (p: number) => {
+    const idx = BEATS.findIndex((b) => p >= b.show && p < b.hide);
+    if (idx !== activeRef.current) {
+      activeRef.current = idx;
+      setActive(idx); // state only when the visible beat actually changes
+    }
+  };
+
   return (
     <SequenceCanvas
       name="turn"
       frames={201}
       poster="/media/turn-poster.webp"
       scrollLength="+=200%"
-      buildTimeline={(tl) => {
-        gsap.utils.toArray<HTMLElement>(".beat").forEach((el, i) => {
-          const { at } = BEATS[i];
-          tl.fromTo(el, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.08, ease: "power2.out" }, at - 0.08);
-          if (i < BEATS.length - 1) {
-            tl.to(el, { opacity: 0, y: -40, duration: 0.08, ease: "power1.in" }, at + 0.1);
-          }
-        });
-      }}
+      onProgress={onProgress}
     >
       <div className="absolute inset-0 flex items-center justify-start ps-[8vw]">
         <div className="relative h-32 w-full max-w-xl">
-          {BEATS.map((b) => (
-            <p key={b.text} className="beat headline absolute text-5xl text-mist opacity-0 drop-shadow-[0_2px_24px_rgba(22,24,29,0.45)] first:opacity-100 md:text-7xl">
+          {BEATS.map((b, i) => (
+            <p
+              key={b.text}
+              className={`beat headline absolute text-5xl text-mist drop-shadow-[0_2px_24px_rgba(22,24,29,0.45)] transition-all duration-500 ease-out md:text-7xl ${
+                i === active
+                  ? "translate-y-0 opacity-100"
+                  : i < active || active === -1
+                    ? "-translate-y-6 opacity-0"
+                    : "translate-y-6 opacity-0"
+              } ${i === 0 && active === -1 ? "max-md:translate-y-0 max-md:opacity-100" : ""}`}
+            >
               {b.text}
             </p>
           ))}
