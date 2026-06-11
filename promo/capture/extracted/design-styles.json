@@ -1,0 +1,103 @@
+{
+  "typography": [
+    {
+      "role": "heading",
+      "fontFamily": "ui-sans-serif",
+      "fontSize": "230.4px",
+      "fontWeight": "700",
+      "lineHeight": "218.88px",
+      "letterSpacing": "-6.912px",
+      "color": "#F4F5F7",
+      "sampleText": "say hi."
+    },
+    {
+      "role": "display",
+      "fontFamily": "ui-sans-serif",
+      "fontSize": "211.2px",
+      "fontWeight": "700",
+      "lineHeight": "200.64px",
+      "letterSpacing": "-6.336px",
+      "color": "#F4F5F7",
+      "sampleText": "meet robo."
+    },
+    {
+      "role": "heading-2",
+      "fontFamily": "ui-sans-serif",
+      "fontSize": "134.4px",
+      "fontWeight": "700",
+      "lineHeight": "127.68px",
+      "letterSpacing": "-4.032px",
+      "color": "#F4F5F7",
+      "sampleText": "three thingsto know."
+    },
+    {
+      "role": "heading-3",
+      "fontFamily": "ui-sans-serif",
+      "fontSize": "60px",
+      "fontWeight": "700",
+      "lineHeight": "57px",
+      "letterSpacing": "-1.8px",
+      "color": "#F4F5F7",
+      "sampleText": "soft."
+    },
+    {
+      "role": "body",
+      "fontFamily": "ui-sans-serif",
+      "fontSize": "18px",
+      "fontWeight": "400",
+      "lineHeight": "28px",
+      "letterSpacing": "normal",
+      "color": "oklab(0.969883 -0.000229776 -0.00284386 / 0.85)",
+      "sampleText": "a little companion with a big heart — built to listen, learn"
+    },
+    {
+      "role": "link",
+      "fontFamily": "ui-sans-serif",
+      "fontSize": "18px",
+      "fontWeight": "600",
+      "lineHeight": "28px",
+      "letterSpacing": "normal",
+      "color": "#16181D",
+      "sampleText": "preorder robo"
+    }
+  ],
+  "spacing": {
+    "observed": [
+      8,
+      48,
+      154
+    ],
+    "baseUnit": 8
+  },
+  "radius": [],
+  "shadows": [],
+  "buttons": [
+    {
+      "label": "say hi.",
+      "background": "#000000",
+      "color": "#F4F5F7",
+      "padding": "0px",
+      "borderRadius": "0px",
+      "border": "0px solid rgb(244, 245, 247)",
+      "boxShadow": "none",
+      "fontSize": "230.4px",
+      "fontWeight": "700",
+      "height": "218.875px"
+    }
+  ],
+  "cards": [
+    {
+      "label": "card",
+      "background": "#000000",
+      "color": "#16181D",
+      "padding": "0px",
+      "borderRadius": "0px",
+      "border": "0px solid rgb(22, 24, 29)",
+      "boxShadow": "none",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "height": "983.391px"
+    }
+  ],
+  "nav": null
+}

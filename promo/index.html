@@ -1,0 +1,333 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face {
+    font-family: "Quicksand";
+    src: url("fonts/quicksand-var.woff2") format("woff2");
+    font-weight: 300 700;
+    font-style: normal;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  #root {
+    position: relative; width: 1080px; height: 1920px; overflow: hidden;
+    background: #16181d; font-family: "Quicksand", sans-serif;
+  }
+  .scene { position: absolute; inset: 0; }
+  /* ---------- global grain ---------- */
+  .grain {
+    position: absolute; inset: -50%; z-index: 90; pointer-events: none; opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* ---------- scene A: hero sequence ---------- */
+  #sceneA { background: linear-gradient(180deg, #a9b3bf 0%, #c9d1da 100%); }
+  .seq { position: absolute; inset: 0; }
+  .seq img {
+    position: absolute; top: 50%; left: 50%; height: 100%; width: auto;
+    transform: translate(-50%, -50%); opacity: 0;
+  }
+  .seq img:first-child { opacity: 1; }
+  /* readability scrims — checker ignores text-shadow; these are the real fix */
+  .scrim-bottom {
+    position: absolute; inset: auto 0 0 0; height: 46%; z-index: 5;
+    background: linear-gradient(180deg, rgba(22,24,29,0) 0%, rgba(22,24,29,0.62) 78%);
+  }
+  #sceneA .scene-content {
+    position: relative; z-index: 10; display: flex; flex-direction: column;
+    justify-content: flex-end; align-items: center; width: 100%; height: 100%;
+    padding: 120px 70px 360px; gap: 28px; text-align: center;
+  }
+  .eyebrow {
+    position: absolute; top: 90px; left: 70px; z-index: 11;
+    font-weight: 500; font-size: 26px; letter-spacing: 0.45em; text-transform: uppercase;
+    color: rgba(244,245,247,0.75);
+  }
+  .eyebrow b { color: #ff8fa0; font-weight: 700; }
+  .hook-line {
+    font-weight: 700; font-size: 150px; letter-spacing: -0.03em; line-height: 0.95;
+    color: #f4f5f7; text-shadow: 0 4px 60px rgba(22,24,29,0.5);
+  }
+  .hook-line .dot { color: #ff8fa0; }
+  .title-wrap { overflow: hidden; }
+  .title {
+    font-weight: 700; font-size: 168px; letter-spacing: -0.03em; line-height: 0.95;
+    color: #f4f5f7; text-shadow: 0 4px 60px rgba(22,24,29,0.5);
+  }
+  .title .dot { color: #ff8fa0; }
+  .sub {
+    font-weight: 500; font-size: 42px; color: rgba(244,245,247,0.92);
+    text-shadow: 0 2px 30px rgba(22,24,29,0.6); max-width: 18ch;
+  }
+  /* ---------- scene B: trait cards ---------- */
+  #sceneB { background: #16181d; opacity: 0; visibility: hidden; }
+  .ghost {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-weight: 700; font-size: 560px; letter-spacing: -0.05em;
+    color: rgba(140,147,158,0.07); white-space: nowrap; z-index: 1;
+  }
+  #sceneB .scene-content {
+    position: relative; z-index: 10; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; width: 100%; height: 100%;
+    padding: 140px 70px; gap: 44px;
+  }
+  .b-caption {
+    font-weight: 700; font-size: 96px; letter-spacing: -0.03em; color: #f4f5f7;
+    text-align: center; line-height: 1;
+  }
+  .b-caption .dot { color: #ff8fa0; }
+  .cards { display: flex; gap: 28px; align-items: stretch; }
+  .card { width: 296px; }
+  .card .frame {
+    width: 296px; height: 394px; border-radius: 28px; overflow: hidden;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.45);
+  }
+  .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card .word {
+    margin-top: 22px; font-weight: 700; font-size: 52px; color: #f4f5f7; text-align: center;
+  }
+  .card .word i { font-style: normal; color: #ff8fa0; }
+  .rule { height: 3px; width: 320px; background: #ff8fa0; border-radius: 2px; }
+  /* ---------- scene C: turn sequence ---------- */
+  #sceneC { background: linear-gradient(180deg, #a9b3bf, #c9d1da); opacity: 0; visibility: hidden; }
+  #sceneC .scene-content {
+    position: relative; z-index: 10; display: flex; width: 100%; height: 100%;
+    flex-direction: column; justify-content: flex-end; align-items: flex-start;
+    padding: 0 70px 320px; gap: 20px;
+  }
+  .c-caption {
+    font-weight: 700; font-size: 104px; letter-spacing: -0.03em; line-height: 1.02;
+    color: #f4f5f7; text-shadow: 0 3px 44px rgba(22,24,29,0.55); max-width: 11ch;
+  }
+  .c-caption .dot { color: #ff8fa0; }
+  .chapter {
+    font-weight: 500; font-size: 26px; letter-spacing: 0.45em; text-transform: uppercase;
+    color: rgba(244,245,247,0.8);
+  }
+  /* ---------- scene D: say hi ---------- */
+  #sceneD { background: #16181d; opacity: 0; visibility: hidden; }
+  #fogv { position: absolute; top: 50%; left: 50%; height: 100%; width: auto;
+    transform: translate(-50%, -50%); opacity: 0.4; }
+  #sceneD .scene-content {
+    position: relative; z-index: 10; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; width: 100%; height: 100%;
+    padding: 140px 70px; gap: 70px;
+  }
+  .sayhi { display: flex; }
+  .sayhi span {
+    font-weight: 700; font-size: 230px; letter-spacing: -0.03em; line-height: 0.95;
+    color: #f4f5f7; display: inline-block;
+  }
+  .sayhi span.dot { color: #ff8fa0; }
+  .sayhi span.sp { width: 0.35em; }
+  .pill {
+    background: #ff8fa0; color: #16181d; font-weight: 700; font-size: 44px;
+    padding: 34px 76px; border-radius: 999px;
+    box-shadow: 0 0 90px rgba(255,143,160,0.55);
+  }
+  /* ---------- scene E: end card ---------- */
+  #sceneE { background: #16181d; opacity: 0; visibility: hidden; }
+  #sceneE .scene-content {
+    position: relative; z-index: 10; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; width: 100%; height: 100%;
+    padding: 140px 80px; gap: 52px; text-align: center;
+  }
+  .eyes { display: flex; gap: 44px; }
+  .eye {
+    width: 46px; height: 104px; border-radius: 999px; background: #ff8fa0;
+    box-shadow: 0 0 60px rgba(255,143,160,0.8);
+  }
+  .url {
+    font-weight: 700; font-size: 62px; letter-spacing: -0.02em; color: #f4f5f7;
+    line-height: 1.15; white-space: nowrap;
+  }
+  .url i { font-style: normal; color: #ff8fa0; }
+  .follow {
+    font-weight: 500; font-size: 42px; color: #8c939e; letter-spacing: 0.02em;
+  }
+  .e-rule { height: 3px; width: 220px; background: rgba(255,143,160,0.6); border-radius: 2px; }
+  .glow-orb {
+    position: absolute; width: 900px; height: 900px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,143,160,0.16) 0%, rgba(255,143,160,0) 70%);
+    top: 18%; left: 50%; transform: translate(-50%, -50%); z-index: 1;
+  }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="root" data-width="1080" data-height="1920" data-start="0" data-duration="15">
+
+  <!-- fog video runs under scenes D+E -->
+  <video id="fog-clip" data-start="10.3" data-duration="4.7" data-track-index="1"
+         src="assets/fog.mp4" muted playsinline
+         style="position:absolute; top:50%; left:50%; height:100%; width:auto; transform:translate(-50%,-50%); opacity:0; z-index:0;"></video>
+
+  <!-- A: hook + reveal (0 – 4.5) -->
+  <div class="scene" id="sceneA">
+    <div class="seq" id="seqHero"></div>
+    <div class="scrim-bottom"></div>
+    <div class="eyebrow">ben builds <b>/ 001</b></div>
+    <div class="scene-content">
+      <div class="hook-line" id="hook">i built this<span class="dot">.</span></div>
+      <div class="title-wrap" data-layout-allow-overflow><div class="title" id="title">meet robo<span class="dot">.</span></div></div>
+      <div class="sub" id="sub">a cinematic scroll site, crafted with AI</div>
+    </div>
+  </div>
+
+  <!-- B: trait cards (4.5 – 7.5) -->
+  <div class="scene" id="sceneB">
+    <div class="ghost" data-layout-allow-overflow>robo</div>
+    <div class="scene-content">
+      <div class="b-caption" id="bcap">every detail designed<span class="dot">.</span></div>
+      <div class="rule" id="brule"></div>
+      <div class="cards">
+        <div class="card" id="card1"><div class="frame"><img src="assets/robo-soft.jpg" alt=""></div><div class="word">soft<i>.</i></div></div>
+        <div class="card" id="card2"><div class="frame"><img src="assets/robo-smart.jpg" alt=""></div><div class="word">smart<i>.</i></div></div>
+        <div class="card" id="card3"><div class="frame"><img src="assets/robo-yours.jpg" alt=""></div><div class="word">yours<i>.</i></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C: turn sequence (7.5 – 10.5) -->
+  <div class="scene" id="sceneC">
+    <div class="seq" id="seqTurn"></div>
+    <div class="scrim-bottom"></div>
+    <div class="scene-content">
+      <div class="chapter" id="chapter">02 / the story</div>
+      <div class="c-caption" id="ccap">every scroll tells a story<span class="dot">.</span></div>
+    </div>
+  </div>
+
+  <!-- D: say hi (10.5 – 13) -->
+  <div class="scene" id="sceneD">
+    <div class="scene-content">
+      <div class="sayhi" id="sayhi">
+        <span>s</span><span>a</span><span>y</span><span class="sp"></span><span>h</span><span>i</span><span class="dot">.</span>
+      </div>
+      <div class="pill" id="pill">preorder robo</div>
+    </div>
+  </div>
+
+  <!-- E: end card (13 – 15) -->
+  <div class="scene" id="sceneE">
+    <div class="glow-orb" id="orb"></div>
+    <div class="scene-content">
+      <div class="eyes"><div class="eye" id="eyeL"></div><div class="eye" id="eyeR"></div></div>
+      <div class="url">robo-site-black<i>.vercel.app</i></div>
+      <div class="e-rule" id="erule"></div>
+      <div class="follow" id="follow">follow for the next build →</div>
+    </div>
+  </div>
+
+  <div class="grain"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+    // ---- inject frame sequences (deterministic DOM, no async) ----
+    function buildSeq(holderId, dir, count) {
+      const holder = document.getElementById(holderId);
+      let html = "";
+      for (let i = 1; i <= count; i++) {
+        html += `<img src="assets/${dir}/frame_${String(i).padStart(4, "0")}.webp" alt="">`;
+      }
+      holder.innerHTML = html;
+      return Array.from(holder.children);
+    }
+    const heroFrames = buildSeq("seqHero", "seq-hero", 86);
+    const turnFrames = buildSeq("seqTurn", "seq-turn", 66);
+
+    window.__timelines = window.__timelines || {};
+    const tl = gsap.timeline({ paused: true });
+
+    // ---- helper: scrub a frame stack over [t0, t1] with given index range ----
+    function scrub(frames, i0, i1, t0, t1) {
+      const n = i1 - i0;
+      for (let k = 1; k <= n; k++) {
+        const t = t0 + (k / n) * (t1 - t0);
+        tl.set(frames[i0 + k], { opacity: 1 }, t);
+        tl.set(frames[i0 + k - 1], { opacity: 0 }, t);
+      }
+    }
+
+    /* ================= SCENE A : 0 – 4.5 ================= */
+    // hook burst: frames 0→49 in 1.5s, then slow 49→85 over 3s
+    scrub(heroFrames, 0, 49, 0.05, 1.5);
+    scrub(heroFrames, 49, 85, 1.5, 4.4);
+
+    // hook caption slams in (percussive), then hands off to title
+    tl.fromTo("#hook", { opacity: 0, scale: 1.6 },
+      { opacity: 1, scale: 1, duration: 0.32, ease: "expo.out" }, 0.15);
+    tl.fromTo(".eyebrow", { opacity: 0, x: -36 },
+      { opacity: 1, x: 0, duration: 0.5, ease: "power2.out" }, 0.3);
+    // caption swap (within-scene, hard-killed)
+    tl.to("#hook", { opacity: 0, y: -46, duration: 0.28, ease: "power1.in" }, 1.45);
+    tl.set("#hook", { visibility: "hidden" }, 1.78);
+    tl.fromTo("#title", { yPercent: 115 },
+      { yPercent: 0, duration: 0.85, ease: "power3.out" }, 1.7);
+    tl.fromTo("#sub", { opacity: 0, y: 34 },
+      { opacity: 1, y: 0, duration: 0.6, ease: "sine.out" }, 2.25);
+
+    /* ===== transition A→B at 4.5 : hard cut with 0.18s dip (percussive register shift) ===== */
+    tl.set("#sceneB", { visibility: "visible" }, 4.42);
+    tl.fromTo("#sceneB", { opacity: 0 }, { opacity: 1, duration: 0.18, ease: "expo.inOut" }, 4.42);
+    tl.set("#sceneA", { visibility: "hidden" }, 4.6);
+
+    /* ================= SCENE B : 4.5 – 7.5 ================= */
+    tl.fromTo("#bcap", { opacity: 0, letterSpacing: "0.08em" },
+      { opacity: 1, letterSpacing: "-0.03em", duration: 0.6, ease: "expo.out" }, 4.7);
+    tl.fromTo("#brule", { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power4.out" }, 4.95);
+    tl.fromTo("#card1", { x: -120, opacity: 0, rotation: -5 },
+      { x: 0, opacity: 1, rotation: 0, duration: 0.55, ease: "back.out(1.4)" }, 5.05);
+    tl.fromTo("#card2", { y: 110, opacity: 0, scale: 0.86 },
+      { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: "power3.out" }, 5.2);
+    tl.fromTo("#card3", { x: 120, opacity: 0, rotation: 5 },
+      { x: 0, opacity: 1, rotation: 0, duration: 0.55, ease: "back.out(1.4)" }, 5.35);
+    // ambient: ghost type drift + gentle card float (seekable, finite)
+    tl.fromTo(".ghost", { xPercent: -54 }, { xPercent: -46, duration: 3, ease: "none" }, 4.5);
+    tl.to("#card2", { y: -10, duration: 0.9, yoyo: true, repeat: 1, ease: "sine.inOut" }, 6.0);
+
+    /* ===== transition B→C at 7.5 : crossfade 0.45 ("this continues") ===== */
+    tl.set("#sceneC", { visibility: "visible" }, 7.3);
+    tl.fromTo("#sceneC", { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power2.inOut" }, 7.3);
+    tl.set("#sceneB", { visibility: "hidden" }, 7.78);
+
+    /* ================= SCENE C : 7.5 – 10.5 ================= */
+    scrub(turnFrames, 0, 65, 7.5, 10.45);
+    tl.fromTo("#chapter", { opacity: 0, x: -30 },
+      { opacity: 1, x: 0, duration: 0.45, ease: "power2.out" }, 7.85);
+    tl.fromTo("#ccap", { opacity: 0, y: 56 },
+      { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, 8.0);
+
+    /* ===== transition C→D at 10.5 : dip-to-ink (dramatic beat) ===== */
+    tl.set("#sceneD", { visibility: "visible" }, 10.45);
+    tl.fromTo("#sceneD", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power3.inOut" }, 10.45);
+    tl.set("#sceneA", { visibility: "hidden" }, 10.8); // safety
+    tl.set("#sceneC", { visibility: "hidden" }, 10.8);
+    tl.fromTo("#fog-clip", { opacity: 0 }, { opacity: 0.4, duration: 0.8, ease: "sine.out" }, 10.5);
+
+    /* ================= SCENE D : 10.5 – 13 ================= */
+    tl.fromTo("#sayhi span",
+      { yPercent: 120, opacity: 0 },
+      { yPercent: 0, opacity: 1, duration: 0.55, ease: "back.out(1.7)", stagger: 0.06 }, 10.75);
+    tl.fromTo("#pill", { scale: 0, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.5, ease: "elastic.out(1, 0.6)" }, 11.55);
+    tl.to("#pill", { boxShadow: "0 0 130px rgba(255,143,160,0.85)", duration: 0.55, yoyo: true, repeat: 1, ease: "sine.inOut" }, 12.0);
+
+    /* ===== transition D→E at 13 : slow crossfade (outro, no new energy) ===== */
+    tl.set("#sceneE", { visibility: "visible" }, 12.85);
+    tl.fromTo("#sceneE", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.inOut" }, 12.85);
+    tl.set("#sceneD", { visibility: "hidden" }, 13.5);
+
+    /* ================= SCENE E : 13 – 15 ================= */
+    tl.fromTo(".eyes", { opacity: 0, y: -26 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 13.2);
+    // blink once (seekable)
+    tl.to(".eye", { scaleY: 0.12, duration: 0.09, yoyo: true, repeat: 1, ease: "none", transformOrigin: "center" }, 13.9);
+    tl.fromTo(".url", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, 13.35);
+    tl.fromTo("#erule", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power4.out" }, 13.6);
+    tl.fromTo("#follow", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "sine.out" }, 13.8);
+    tl.fromTo("#orb", { scale: 0.85 }, { scale: 1.05, duration: 1.9, ease: "sine.inOut" }, 13.1);
+
+    window.__timelines["root"] = tl;
+  </script>
+</div>
+</body>
+</html>

@@ -40,3 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 assets-src/
+.vercel
+
+promo/renders/
+promo/snapshots/
+promo/.hyperframes/
+promo/capture/screenshots/

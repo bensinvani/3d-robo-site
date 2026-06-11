@@ -1,0 +1,14 @@
+[p] waking robo
+[div] meet robo.
+[p] a little companion with a big heart — built to listen, learn, and hang out.
+[h2] three things
+[span] to know.
+[h3] soft.
+[p] knit on the outside, gentle on the inside.
+[h3] smart.
+[p] learns your vibe, one hangout at a time.
+[h3] yours.
+[p] one robo, tuned entirely to you.
+[p] robo's got you.
+[a] preorder robo
+[footer] © 2026 robo · made with claude
